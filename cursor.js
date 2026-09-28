@@ -27,6 +27,7 @@
     document.body.appendChild(trail);
     let previousX = null;
     let tiltTimer;
+    let lastMagicSpark = 0;
     const interactive = 'a, button, input, textarea, select, label, summary, [role="button"], [contenteditable="true"]';
     const hide = () => {
         root.classList.remove('has-custom-cursor');
@@ -44,7 +45,12 @@
         previousX = event.clientX;
         clearTimeout(tiltTimer);
         tiltTimer = setTimeout(() => cursor.style.setProperty('--cursor-tilt', '0deg'), 100);
-        cursor.classList.toggle('is-hovering', event.target instanceof Element && !!event.target.closest(interactive));
+        const hovering = event.target instanceof Element && !!event.target.closest(interactive);
+        cursor.classList.toggle('is-hovering', hovering);
+        if (hovering && !motion.matches && performance.now() - lastMagicSpark > 130) {
+            sparkle(event.clientX + 11, event.clientY - 5);
+            lastMagicSpark = performance.now();
+        }
         root.classList.add('has-custom-cursor');
         return true;
     };
@@ -52,7 +58,7 @@
         if (motion.matches) return;
         const spark = document.createElement('span');
         spark.className = 'cursor-spark';
-        spark.textContent = '✦';
+        spark.textContent = Math.random() > .5 ? '✦' : '✧';
         spark.style.left = `${x}px`;
         spark.style.top = `${y}px`;
         document.body.appendChild(spark);
