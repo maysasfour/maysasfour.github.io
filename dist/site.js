@@ -63,10 +63,8 @@
     const enterButton = document.querySelector('[data-enter-site]');
     const soundToggle = document.querySelector('[data-sound-toggle]');
     const ambientAudio = document.querySelector('[data-ambient-audio]');
-    let audioContext;
-    let masterGain;
+    const soundStorageKey = 'mays-fur-elise-preference';
     let soundOn = false;
-    let synthStarted = false;
     const siteNotice = document.createElement('p');
     siteNotice.className = 'site-notice';
     siteNotice.setAttribute('role', 'status');
@@ -79,34 +77,20 @@
     };
     const updateSoundButton = active => {
         if (!(soundToggle instanceof HTMLButtonElement)) return;
-        soundToggle.textContent = active ? 'Ambient on' : 'Play ambience';
+        soundToggle.textContent = active ? 'Für Elise on' : 'Play Für Elise';
         soundToggle.setAttribute('aria-pressed', String(active));
+    };
+    const savedSoundPreference = () => {
+        try { return localStorage.getItem(soundStorageKey); } catch { return null; }
+    };
+    const saveSoundPreference = value => {
+        try { localStorage.setItem(soundStorageKey, value); } catch { /* The button still works without storage. */ }
     };
     const hideOpening = () => {
         if (openingScreen instanceof HTMLElement) openingScreen.classList.add('is-hidden');
         document.body.classList.add('site-entered');
     };
-    const startSynth = async () => {
-        if (!('AudioContext' in window || 'webkitAudioContext' in window)) throw new Error('Audio is unavailable');
-        const AudioCtor = window.AudioContext || window.webkitAudioContext;
-        audioContext = audioContext || new AudioCtor();
-        if (audioContext.state === 'suspended') await audioContext.resume();
-        masterGain = masterGain || audioContext.createGain();
-        masterGain.gain.setValueAtTime(.06, audioContext.currentTime);
-        masterGain.connect(audioContext.destination);
-        if (synthStarted) return;
-        [220, 277.18, 329.63, 440].forEach((frequency, index) => {
-            const oscillator = audioContext.createOscillator();
-            const gain = audioContext.createGain();
-            oscillator.type = index === 0 ? 'sine' : 'triangle';
-            oscillator.frequency.value = frequency;
-            gain.gain.value = index === 0 ? 0.16 : 0.07;
-            oscillator.connect(gain).connect(masterGain);
-            oscillator.start();
-        });
-        synthStarted = true;
-    };
-    const startSoftSound = async () => {
+    const startSoftSound = async ({ persist = true, quiet = false } = {}) => {
         if (soundOn) return;
         if (ambientAudio instanceof HTMLAudioElement) {
             try {
@@ -114,26 +98,22 @@
                 await ambientAudio.play();
                 soundOn = true;
                 updateSoundButton(true);
+                if (persist) saveSoundPreference('on');
                 return;
-            } catch { /* Fall back to a soft generated chord below. */ }
+            } catch {
+                if (!quiet) announce('Click Play Für Elise to allow music in this browser.');
+                return;
+            }
         }
-        try {
-            await startSynth();
-        } catch {
-            announce('Sound could not start in this browser. Use the music button after checking your device volume.');
-            updateSoundButton(false);
-            return;
-        }
-        soundOn = true;
-        updateSoundButton(true);
+        announce('The music file is unavailable right now. Please refresh and try again.');
     };
     const stopSoftSound = () => {
         if (ambientAudio instanceof HTMLAudioElement) ambientAudio.pause();
-        if (masterGain && audioContext) masterGain.gain.setTargetAtTime(0, audioContext.currentTime, 0.03);
         soundOn = false;
+        saveSoundPreference('off');
         updateSoundButton(false);
     };
-    ambientAudio?.addEventListener('error', () => announce('The music file did not load. The site will use a soft sound fallback.'));
+    ambientAudio?.addEventListener('error', () => announce('The Für Elise music file did not load. Please refresh and try again.'));
     document.querySelectorAll('img').forEach(image => {
         image.addEventListener('error', () => {
             image.hidden = true;
@@ -151,7 +131,7 @@
     if (enterButton instanceof HTMLButtonElement) {
         enterButton.addEventListener('click', async () => {
             hideOpening();
-            try { await startSoftSound(); } catch { stopSoftSound(); }
+            if (savedSoundPreference() !== 'off') await startSoftSound();
         });
     } else {
         hideOpening();
@@ -163,13 +143,14 @@
         soundToggle.addEventListener('click', async () => {
             if (soundOn) stopSoftSound();
             else {
-                try { await startSoftSound(); } catch { stopSoftSound(); }
+                await startSoftSound();
             }
         });
     }
     document.addEventListener('pointerdown', () => {
-        startSoftSound().catch(stopSoftSound);
+        if (savedSoundPreference() !== 'off') startSoftSound({ persist: true, quiet: true });
     }, { once: true });
+    if (savedSoundPreference() === 'on') startSoftSound({ persist: false, quiet: true });
 
     const form = document.querySelector('[data-service-form]');
     const statusNode = document.querySelector('[data-form-status]');

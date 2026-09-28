@@ -5,20 +5,16 @@
     const cursor = document.createElement('div');
     cursor.className = 'cursor-shell';
     cursor.setAttribute('aria-hidden', 'true');
-    const outline = 'M8 2 Q9 1 10 2.5 L22 18 Q23.5 21 20 20.5 L12.5 19 Q11.5 18.8 10.5 19.5 L3.5 24 Q1 25.5 2 22 L6.5 4 Q7 2.5 8 2Z';
-    cursor.innerHTML = `<svg viewBox="0 0 24 26" fill="none" aria-hidden="true">
+    cursor.innerHTML = `<svg viewBox="0 0 32 32" fill="none" aria-hidden="true">
         <defs>
-            <linearGradient id="cursor-silver" x1="3" y1="2" x2="19" y2="25" gradientUnits="userSpaceOnUse">
-                <stop stop-color="#fff"/><stop offset=".2" stop-color="#e7e7eb"/><stop offset=".48" stop-color="#b5b8bf"/><stop offset=".75" stop-color="#d6d8de"/><stop offset="1" stop-color="#fafbff"/>
+            <linearGradient id="wand-glow" x1="7" y1="27" x2="25" y2="7" gradientUnits="userSpaceOnUse">
+                <stop stop-color="#9e6ee5"/><stop offset=".45" stop-color="#f7c5df"/><stop offset="1" stop-color="#fff9ec"/>
             </linearGradient>
-            <linearGradient id="cursor-rim" x1="5" y1="2" x2="14" y2="25" gradientUnits="userSpaceOnUse">
-                <stop stop-color="#fff"/><stop offset=".48" stop-color="#efeff4"/><stop offset="1" stop-color="#6f727b"/>
-            </linearGradient>
-            <clipPath id="cursor-clip"><path d="${outline}"/></clipPath>
         </defs>
-        <path d="${outline}" fill="url(#cursor-silver)" stroke="url(#cursor-rim)" stroke-width="1.2" stroke-linejoin="round"/>
-        <path d="M8 4 L3.5 21 M10 4 L20 17" stroke="white" stroke-opacity=".72" stroke-width=".65" stroke-linecap="round"/>
-        <g clip-path="url(#cursor-clip)"><path class="cursor-glint" d="M-10 -5L-2 -5L22 31L14 31Z" fill="white" fill-opacity=".4"/></g>
+        <path d="M7 27L24 10" stroke="#4d2a75" stroke-width="5" stroke-linecap="round"/>
+        <path d="M7 27L24 10" stroke="url(#wand-glow)" stroke-width="2.7" stroke-linecap="round"/>
+        <path class="cursor-glint" d="M25 3L26.7 7.3L31 9L26.7 10.7L25 15L23.3 10.7L19 9L23.3 7.3Z" fill="#fff8fc"/>
+        <circle cx="7" cy="27" r="2.3" fill="#f9d4e9"/>
     </svg>`;
     document.body.appendChild(cursor);
     const trail = document.createElement('div');
@@ -38,7 +34,7 @@
     const update = event => {
         if (!finePointer.matches || event.pointerType !== 'mouse') { hide(); return false; }
         // Keep the arrow tip on the real pointer; animate the surface, not its position.
-        cursor.style.transform = `translate3d(${event.clientX - 6.667}px, ${event.clientY - 1.692}px, 0)`;
+        cursor.style.transform = `translate3d(${event.clientX - 7}px, ${event.clientY - 27}px, 0)`;
         trail.style.transform = `translate3d(${event.clientX - 34}px, ${event.clientY - 34}px, 0)`;
         const tilt = motion.matches || previousX === null ? 0 : Math.max(-7, Math.min(7, (event.clientX - previousX) * .25));
         cursor.style.setProperty('--cursor-tilt', tilt + 'deg');
