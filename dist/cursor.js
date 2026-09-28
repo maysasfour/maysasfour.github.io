@@ -21,6 +21,10 @@
         <g clip-path="url(#cursor-clip)"><path class="cursor-glint" d="M-10 -5L-2 -5L22 31L14 31Z" fill="white" fill-opacity=".4"/></g>
     </svg>`;
     document.body.appendChild(cursor);
+    const trail = document.createElement('div');
+    trail.className = 'cursor-trail';
+    trail.setAttribute('aria-hidden', 'true');
+    document.body.appendChild(trail);
     let previousX = null;
     let tiltTimer;
     const interactive = 'a, button, input, textarea, select, label, summary, [role="button"], [contenteditable="true"]';
@@ -34,6 +38,7 @@
         if (!finePointer.matches || event.pointerType !== 'mouse') { hide(); return false; }
         // Keep the arrow tip on the real pointer; animate the surface, not its position.
         cursor.style.transform = `translate3d(${event.clientX - 6.667}px, ${event.clientY - 1.692}px, 0)`;
+        trail.style.transform = `translate3d(${event.clientX - 34}px, ${event.clientY - 34}px, 0)`;
         const tilt = motion.matches || previousX === null ? 0 : Math.max(-7, Math.min(7, (event.clientX - previousX) * .25));
         cursor.style.setProperty('--cursor-tilt', tilt + 'deg');
         previousX = event.clientX;
@@ -43,6 +48,16 @@
         root.classList.add('has-custom-cursor');
         return true;
     };
+    const sparkle = (x, y) => {
+        if (motion.matches) return;
+        const spark = document.createElement('span');
+        spark.className = 'cursor-spark';
+        spark.textContent = '✦';
+        spark.style.left = `${x}px`;
+        spark.style.top = `${y}px`;
+        document.body.appendChild(spark);
+        window.setTimeout(() => spark.remove(), 720);
+    };
     window.addEventListener('pointermove', update, { passive: true });
     window.addEventListener('pointerover', update, { passive: true });
     window.addEventListener('pointerdown', event => {
@@ -51,6 +66,7 @@
         cursor.classList.remove('is-pulsing');
         void cursor.offsetWidth;
         cursor.classList.add('is-pulsing');
+        sparkle(event.clientX, event.clientY);
     });
     window.addEventListener('pointerup', () => cursor.classList.remove('is-clicking'));
     window.addEventListener('pointercancel', hide);

@@ -75,7 +75,7 @@
         audioContext = audioContext || new AudioCtor();
         if (audioContext.state === 'suspended') await audioContext.resume();
         masterGain = masterGain || audioContext.createGain();
-        masterGain.gain.value = 0.025;
+        masterGain.gain.value = 0.045;
         masterGain.connect(audioContext.destination);
         [220, 277.18, 329.63].forEach((frequency, index) => {
             const oscillator = audioContext.createOscillator();
@@ -88,7 +88,7 @@
         });
         soundOn = true;
         if (soundToggle instanceof HTMLButtonElement) {
-            soundToggle.textContent = 'Sound on';
+            soundToggle.textContent = 'Ambient on';
             soundToggle.setAttribute('aria-pressed', 'true');
         }
     };
@@ -97,7 +97,7 @@
         masterGain.gain.setTargetAtTime(0, audioContext.currentTime, 0.03);
         soundOn = false;
         if (soundToggle instanceof HTMLButtonElement) {
-            soundToggle.textContent = 'Sound off';
+            soundToggle.textContent = 'Play ambience';
             soundToggle.setAttribute('aria-pressed', 'false');
         }
     };
@@ -120,6 +120,9 @@
             }
         });
     }
+    document.addEventListener('pointerdown', () => {
+        startSoftSound().catch(stopSoftSound);
+    }, { once: true });
 
     const form = document.querySelector('[data-service-form]');
     const statusNode = document.querySelector('[data-form-status]');
