@@ -119,12 +119,17 @@
             const submitButton = form.querySelector('button[type="submit"]');
             if (submitButton instanceof HTMLButtonElement) submitButton.disabled = true;
             setStatus('Sending your request...', false);
+            formData.set('_replyto', email);
+            formData.set('_url', window.location.href);
 
             try {
                 const response = await fetch(form.action, {
                     method: 'POST',
-                    headers: { Accept: 'application/json' },
-                    body: formData
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Accept: 'application/json'
+                    },
+                    body: JSON.stringify(Object.fromEntries(formData.entries()))
                 });
 
                 if (!response.ok) throw new Error('Request failed');
