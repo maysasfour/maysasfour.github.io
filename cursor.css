@@ -1,0 +1,39 @@
+.cursor-shell {
+    position: fixed; left: 0; top: 0; width: 20px; height: 22px;
+    z-index: 2147483647; pointer-events: none; opacity: 0;
+}
+.cursor-shell svg {
+    display: block; width: 100%; height: 100%; overflow: visible;
+    transform-origin: 6.667px 1.692px;
+    transform: rotate(var(--cursor-tilt, 0deg));
+    filter: drop-shadow(0 1px 1px #14111c88) drop-shadow(0 0 2px #ffffff60);
+    transition: transform 140ms ease, filter 180ms ease;
+}
+.cursor-shell.is-hovering svg {
+    transform: rotate(var(--cursor-tilt, 0deg)) scale(1.08);
+    filter: drop-shadow(0 1px 1px #14111c88) drop-shadow(0 0 4px #ffffffb3);
+}
+.cursor-shell.is-clicking svg { transform: scale(.88); }
+.cursor-glint { animation: cursor-glint 4s ease-in-out infinite; }
+.cursor-shell::after {
+    content: ''; position: absolute; top: -9px; left: -4px;
+    width: 22px; height: 22px; border: 1px solid #ddd5f6b3;
+    border-radius: 50%; opacity: 0;
+}
+.cursor-shell.is-pulsing::after { animation: cursor-pulse 360ms ease-out; }
+@keyframes cursor-glint {
+    0%, 25% { transform: translateX(-22px); }
+    65%, 100% { transform: translateX(26px); }
+}
+@keyframes cursor-pulse {
+    from { transform: scale(.2); opacity: .7; }
+    to { transform: scale(1.3); opacity: 0; }
+}
+@media (hover: hover) and (pointer: fine) {
+    html.has-custom-cursor, html.has-custom-cursor * { cursor: none !important; }
+    html.has-custom-cursor .cursor-shell { opacity: 1; }
+}
+@media (prefers-reduced-motion: reduce) {
+    .cursor-shell svg { transition: none; transform: none; }
+    .cursor-glint, .cursor-shell.is-pulsing::after { animation: none; }
+}
