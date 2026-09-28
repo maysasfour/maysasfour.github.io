@@ -660,8 +660,8 @@ body::before {
     place-items: center;
     padding: 24px;
     background:
-        linear-gradient(#0e0b16d9, #0e0b16ef),
-        url("assets/mays-portrait.jpeg") center / cover;
+        linear-gradient(90deg, #100b1bb8 0%, #100b1b65 48%, #100b1b38 100%),
+        url("assets/mays-portrait.jpeg") 58% 25% / cover;
     transition: opacity .75s ease, visibility .75s ease;
 }
 
@@ -677,6 +677,9 @@ body::before {
     padding: 48px 24px;
     border-block: 1px solid #ffffff38;
     color: #fff;
+    background: #100b1b2e;
+    backdrop-filter: blur(2px);
+    box-shadow: 0 18px 60px #05020d30;
 }
 
 .opening-kicker {
