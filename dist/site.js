@@ -109,6 +109,9 @@
     } else {
         hideOpening();
     }
+    if (openingScreen instanceof HTMLElement) {
+        window.setTimeout(hideOpening, 2600);
+    }
     if (soundToggle instanceof HTMLButtonElement) {
         soundToggle.addEventListener('click', async () => {
             if (soundOn) stopSoftSound();
