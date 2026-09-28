@@ -659,9 +659,13 @@ body::before {
     display: grid;
     place-items: center;
     padding: 24px;
-    background:
-        linear-gradient(90deg, #100b1bb8 0%, #100b1b65 48%, #100b1b38 100%),
-        url("assets/mays-portrait.jpeg") 58% 25% / cover;
+    background-color: #100b1b;
+    background-image:
+        linear-gradient(90deg, #100b1b8a 0%, #100b1b34 48%, #100b1b22 100%),
+        url("assets/mays-portrait.jpeg");
+    background-position: center, center;
+    background-size: cover, contain;
+    background-repeat: no-repeat;
     transition: opacity .75s ease, visibility .75s ease;
 }
 
