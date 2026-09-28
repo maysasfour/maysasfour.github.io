@@ -749,7 +749,7 @@ em,
 .hero-copy { animation: hero-rise .85s ease both; }
 
 .portrait-stage {
-    min-height: 540px;
+    min-height: 470px;
     display: grid;
     place-items: center;
     overflow: visible;
@@ -767,10 +767,10 @@ em,
 .portrait-stage img {
     position: relative;
     z-index: 1;
-    width: min(390px, 78vw);
-    aspect-ratio: 4 / 5;
+    width: min(310px, 64vw);
+    aspect-ratio: 3 / 4;
     object-fit: cover;
-    object-position: 58% 38%;
+    object-position: 52% 25%;
     border-radius: 22px 22px 130px 22px;
     filter: saturate(.92) contrast(1.05);
     box-shadow: 0 28px 80px #0008;
@@ -841,8 +841,8 @@ em,
 }
 
 @media (max-width: 920px) {
-    .hero .portrait-stage { transform: none; width: auto; margin-left: 0; min-height: 470px; }
-    .portrait-stage img { width: min(330px, 70vw); }
+    .hero .portrait-stage { transform: none; width: auto; margin-left: 0; min-height: 430px; }
+    .portrait-stage img { width: min(275px, 62vw); }
 }
 
 @media (max-width: 600px) {
@@ -850,8 +850,8 @@ em,
     .opening-frame h1 { font-size: clamp(4rem, 21vw, 6rem); }
     .sound-toggle { right: 12px; bottom: 12px; }
     .hero h1 { font-size: 76px; }
-    .hero .portrait-stage { height: 430px; min-height: 430px; margin: 26px auto 0; }
-    .portrait-stage img { width: min(285px, 82vw); border-radius: 18px 18px 90px 18px; }
+    .hero .portrait-stage { height: 375px; min-height: 375px; margin: 26px auto 0; }
+    .portrait-stage img { width: min(235px, 62vw); border-radius: 18px 18px 90px 18px; }
     .portrait-script { right: 2%; bottom: 8%; font-size: 5rem; }
     .portrait-stage .note-one { top: 15%; right: 0; }
     .portrait-stage .note-two { bottom: 10%; left: 0; }
